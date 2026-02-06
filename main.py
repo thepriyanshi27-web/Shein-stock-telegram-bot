@@ -43,9 +43,9 @@ async def add(update: Update, context: ContextTypes.DEFAULT_TYPE):
     products.add(url)
     save_products(products)
 
-    await update.message.reply_text("📝 Added!\nIs product pe nazar rakhungi 👀💕
-
-")
+    await update.message.reply_text(
+    "📝 Added!\nIs product pe nazar rakhungi 👀💞"
+)
 
 async def remove(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
