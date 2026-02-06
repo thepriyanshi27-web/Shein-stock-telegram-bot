@@ -1,33 +1,26 @@
+import os
 import requests
-import time
 from bs4 import BeautifulSoup
 from telegram import Bot
-import os
+from apscheduler.schedulers.blocking import BlockingScheduler
 
-TOKEN = os.getenv("BOT_TOKEN")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
-PRODUCT_URLS = [
+bot = Bot(token=BOT_TOKEN)
+
+URLS = [
     "https://sheinindia.onelink.me/ZrSt/5vpryx5e"
 ]
 
-bot = Bot(token=TOKEN)
+def check_stock():
+    for url in URLS:
+        r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
+        soup = BeautifulSoup(r.text, "html.parser")
 
-def check_stock(url):
-    headers = {"User-Agent": "Mozilla/5.0"}
-    r = requests.get(url, headers=headers, timeout=20)
-    soup = BeautifulSoup(r.text, "html.parser")
-    return "Add to Bag" in soup.text
+        if "Out of Stock" not in soup.text:
+            bot.send_message(chat_id=CHAT_ID, text=f"🔥 Stock available!\n{url}")
 
-while True:
-    for url in PRODUCT_URLS.copy():
-        try:
-            if check_stock(url):
-                bot.send_message(
-                    chat_id=CHAT_ID,
-                    text="🚨 SHEIN Alert!\nYour wishlist product is BACK IN STOCK 🛍️"
-                )
-                PRODUCT_URLS.remove(url)
-        except:
-            pass
-    time.sleep(900)
+scheduler = BlockingScheduler()
+scheduler.add_job(check_stock, "interval", minutes=15)
+scheduler.start()
