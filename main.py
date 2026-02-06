@@ -8,7 +8,7 @@ TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
 PRODUCT_URLS = [
-    "PASTE_SHEIN_PRODUCT_LINK_HERE"
+    "https://sheinindia.onelink.me/ZrSt/5vpryx5e"
 ]
 
 bot = Bot(token=TOKEN)
